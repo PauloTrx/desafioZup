@@ -15,12 +15,12 @@ public class UsuarioController {
     UsuarioRepository usuarioRepository;
 
     @PostMapping
-    Usuario usuario(@PathVariable  Usuario usuario){
-        return usuarioRepository.save(usuario);
+    public Usuario usuario(@RequestBody Usuario user){
+        return usuarioRepository.save(user);
     }
 
     @GetMapping
-    List<Usuario> findAll(){
+    public List<Usuario> findAll(){
         return usuarioRepository.findAll();
     }
 }
