@@ -20,7 +20,7 @@ public class UsuarioController {
     }
 
     @GetMapping
-    List<Long> listarTodos(){
+    List<Usuario> findAll(){
         return usuarioRepository.findAll();
     }
 }
