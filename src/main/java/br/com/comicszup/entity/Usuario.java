@@ -1,6 +1,7 @@
 package br.com.comicszup.entity;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -13,14 +14,14 @@ public class Usuario {
     @Column(unique = true, nullable = false)
     private String email;
     @Column(unique = true, nullable = false)
-    private Integer CPF;
+    private String CPF;
     @Column(nullable = false)
-    private Date dataDeNascimento;
+    private LocalDate dataDeNascimento;
 
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, Integer CPF, Date dataDeNascimento) {
+    public Usuario(String nome, String email, String CPF, LocalDate dataDeNascimento) {
         this.nome = nome;
         this.email = email;
         this.CPF = CPF;
@@ -51,19 +52,19 @@ public class Usuario {
         this.email = email;
     }
 
-    public Integer getCPF() {
+    public String getCPF() {
         return CPF;
     }
 
-    public void setCPF(Integer CPF) {
+    public void setCPF(String CPF) {
         this.CPF = CPF;
     }
 
-    public Date getDataDeNascimento() {
+    public LocalDate getDataDeNascimento() {
         return dataDeNascimento;
     }
 
-    public void setDataDeNascimento(Date dataDeNascimento) {
+    public void setDataDeNascimento(LocalDate dataDeNascimento) {
         this.dataDeNascimento = dataDeNascimento;
     }
 }
