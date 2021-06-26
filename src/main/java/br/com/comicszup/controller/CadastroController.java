@@ -9,13 +9,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/usuario")
-public class UsuarioController {
+public class CadastroController {
 
     @Autowired
     UsuarioRepository usuarioRepository;
 
     @PostMapping
-    public Usuario usuario(@RequestBody Usuario user){
+    public Usuario cadastroUsuario(@RequestBody Usuario user){
         return usuarioRepository.save(user);
     }
 
@@ -23,4 +23,5 @@ public class UsuarioController {
     public List<Usuario> findAll(){
         return usuarioRepository.findAll();
     }
+
 }
