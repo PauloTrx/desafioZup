@@ -2,6 +2,7 @@ package br.com.comicszup.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
 @Entity
 public class Usuario {
@@ -16,23 +17,23 @@ public class Usuario {
     private String CPF;
     @Column(nullable = false)
     private LocalDate dataDeNascimento;
+    @OneToMany(mappedBy = "usuario")
+    List<Comics> comics;
 
     public Usuario() {
     }
 
-    public Usuario(String nome, String email, String CPF, LocalDate dataDeNascimento) {
+    public Usuario(Long id, String nome, String email, String CPF, LocalDate dataDeNascimento, List<Comics> comics) {
+        this.id = id;
         this.nome = nome;
         this.email = email;
         this.CPF = CPF;
         this.dataDeNascimento = dataDeNascimento;
+        this.comics = comics;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Long getId(){
+        return this.id;
     }
 
     public String getNome() {
@@ -66,4 +67,9 @@ public class Usuario {
     public void setDataDeNascimento(LocalDate dataDeNascimento) {
         this.dataDeNascimento = dataDeNascimento;
     }
+
+    public List<Comics> getComics() {
+        return comics;
+    }
+
 }

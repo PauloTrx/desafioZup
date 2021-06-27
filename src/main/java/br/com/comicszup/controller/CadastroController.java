@@ -46,8 +46,13 @@ public class CadastroController {
 
     @GetMapping("/usuario/{id}")
     public Usuario findById(@PathVariable Long id){
-        return usuarioRepository.getById(id);
+        System.out.println(id);
+        return usuarioRepository.findById(id).get();
     }
+
+
+
+
 
 
 /*
@@ -64,10 +69,19 @@ public class CadastroController {
         return comicsRepository.findAll();
     }
 
-    @PostMapping("/comics")
-    public Comics adicionar(@RequestBody Comics comics){
+    @PostMapping("usuario/{id}/comics")
+    public Comics adicionar(@PathVariable Long id, @RequestBody Comics comics){
+        Usuario usuario = usuarioRepository.findById(id).get();
+        comics.setUsuario(usuario);
         return comicsRepository.save(comics);
     }
+
+
+
+
+
+
+
 
     public Long gerarTimeStamp() {
         return new Date().getTime();

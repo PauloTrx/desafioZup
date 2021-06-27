@@ -1,5 +1,7 @@
 package br.com.comicszup.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -18,24 +20,21 @@ public class Comics {
     private String isbn;
     @Column(nullable = false)
     private String descricao;
+    @JsonIgnore
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private Usuario usuario;
 
     public Comics() {
     }
 
-    public Comics(String titulo, BigDecimal preco, String autores, String isbn, String descricao) {
+    public Comics(String titulo, BigDecimal preco, String autores, String isbn, String descricao, Usuario usuario) {
         this.titulo = titulo;
         this.preco = preco;
         this.autores = autores;
         this.isbn = isbn;
         this.descricao = descricao;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+        this.usuario = usuario;
     }
 
     public String getTitulo() {
@@ -76,5 +75,13 @@ public class Comics {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public void setUsuario(Usuario usuario) {
+        this.usuario = usuario;
     }
 }
