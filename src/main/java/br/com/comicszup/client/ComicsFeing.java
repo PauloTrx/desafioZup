@@ -8,5 +8,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name="marvel", url = "https://gateway.marvel.com:443/v1/public")
 public interface ComicsFeing {
     @GetMapping("/comics")
-    public ComicsResponseDTO getAll(@RequestParam("ts") Long ts, @RequestParam("apikey") String api_key, @RequestParam("hash") String hash);
+    ComicsResponseDTO getByTitle(@RequestParam("ts") Long ts,
+                             @RequestParam("apikey") String apikey,
+                             @RequestParam("hash") String hash,
+                             @RequestParam("title") String title);
 }

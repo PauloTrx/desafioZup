@@ -20,21 +20,9 @@ public class Usuario {
     @OneToMany(mappedBy = "usuario")
     List<Comics> comics;
 
-    public Usuario() {
-    }
+    public Usuario() { }
 
-    public Usuario(Long id, String nome, String email, String CPF, LocalDate dataDeNascimento, List<Comics> comics) {
-        this.id = id;
-        this.nome = nome;
-        this.email = email;
-        this.CPF = CPF;
-        this.dataDeNascimento = dataDeNascimento;
-        this.comics = comics;
-    }
-
-    public Long getId(){
-        return this.id;
-    }
+    public Long getId(){ return this.id; }
 
     public String getNome() {
         return nome;
@@ -48,9 +36,7 @@ public class Usuario {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
     public String getCPF() {
         return CPF;
@@ -64,9 +50,7 @@ public class Usuario {
         return dataDeNascimento;
     }
 
-    public void setDataDeNascimento(LocalDate dataDeNascimento) {
-        this.dataDeNascimento = dataDeNascimento;
-    }
+    public void setDataDeNascimento(LocalDate dataDeNascimento) { this.dataDeNascimento = dataDeNascimento; }
 
     public List<Comics> getComics() {
         return comics;

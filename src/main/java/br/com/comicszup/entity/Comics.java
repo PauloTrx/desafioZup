@@ -25,17 +25,17 @@ public class Comics {
     @JoinColumn(name = "user_id")
     private Usuario usuario;
 
-    public Comics() {
-    }
+    //Informações coletadas via API
+    @Column(name = "id_revista")
+    private Integer idRevista;
+    private String upc;
+    private String formato;
+    @Column(name = "quantidade_paginas")
+    private String quantidadePaginas;
 
-    public Comics(String titulo, BigDecimal preco, String autores, String isbn, String descricao, Usuario usuario) {
-        this.titulo = titulo;
-        this.preco = preco;
-        this.autores = autores;
-        this.isbn = isbn;
-        this.descricao = descricao;
-        this.usuario = usuario;
-    }
+    public Comics() { }
+
+    public Long getId() { return id; }
 
     public String getTitulo() {
         return titulo;
@@ -84,4 +84,21 @@ public class Comics {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
+
+    public Integer getIdRevista() { return idRevista; }
+
+    public void setIdRevista(Integer idRevista) { this.idRevista = idRevista; }
+
+    public String getUpc() { return upc; }
+
+    public void setUpc(String upc) { this.upc = upc; }
+
+    public String getFormato() { return formato; }
+
+    public void setFormato(String formato) { this.formato = formato; }
+
+    public String getQuantidadePaginas() { return quantidadePaginas; }
+
+    public void setQuantidadePaginas(String quantidadePaginas) { this.quantidadePaginas = quantidadePaginas; }
+
 }
