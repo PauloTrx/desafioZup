@@ -2,7 +2,6 @@ package br.com.comicszup.entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 public class Usuario {
