@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 @Entity
 public class Comics {
@@ -32,6 +35,10 @@ public class Comics {
     private String formato;
     @Column(name = "quantidade_paginas")
     private String quantidadePaginas;
+
+    //Informações do desconto
+    private String diaDoDesconto;
+    private Boolean descontoAtivo;
 
     public Comics() { }
 
@@ -101,4 +108,57 @@ public class Comics {
 
     public void setQuantidadePaginas(String quantidadePaginas) { this.quantidadePaginas = quantidadePaginas; }
 
+    public String getDiaDoDesconto() {
+        return diaDoDesconto;
+    }
+
+    public void setDiaDoDesconto(String diaDoDesconto) {
+        this.diaDoDesconto = diaDoDesconto;
+    }
+
+    public Boolean getDescontoAtivo() {
+        return descontoAtivo;
+    }
+
+    public void setDescontoAtivo(Boolean descontoAtivo) {
+        this.descontoAtivo = descontoAtivo;
+    }
+
+    public String verificarDiaDoDesconto(String isbn){
+
+        String ultimoDigitoIsbn = isbn.substring(isbn.length()-1);
+
+        switch (ultimoDigitoIsbn){
+            case "0": case "1":
+                return "segunda-feira";
+
+            case "2": case "3":
+                return "terça-feira";
+
+            case "4": case "5":
+                return "quarta-feira";
+
+            case "6": case "7":
+                return "quinta-feira";
+
+            case "8": case "9":
+                return "sexta-feira";
+
+            default:
+                return "inválido";
+        }
+    }
+    public Boolean verificarDescontoAtivo(){
+
+        LocalDate dataAtual = LocalDate.now();
+        LocalDate later = dataAtual.plusDays(1);
+        Locale portugues = new Locale("pt", "BR");
+        String diaDaSemanaAtual = later.getDayOfWeek().getDisplayName(TextStyle.FULL, portugues);
+        System.out.println(diaDaSemanaAtual);
+        if(diaDaSemanaAtual.equals(diaDoDesconto)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

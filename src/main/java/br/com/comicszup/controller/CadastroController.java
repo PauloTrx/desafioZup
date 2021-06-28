@@ -6,7 +6,12 @@ import br.com.comicszup.entity.Comics;
 import br.com.comicszup.entity.Usuario;
 import br.com.comicszup.repository.ComicsRepository;
 import br.com.comicszup.repository.UsuarioRepository;
+import feign.Response;
+import javassist.NotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigInteger;
@@ -31,14 +36,22 @@ public class CadastroController {
 
     //Cadastrar usuario
     @PostMapping("/usuario")
-    public Usuario cadastroUsuario(@RequestBody Usuario user) {
-        return usuarioRepository.save(user);
+    public ResponseEntity<Object> cadastroUsuario(@RequestBody Usuario user) {
+        try {
+            return new ResponseEntity<>(usuarioRepository.save(user), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     //Retornar usuario com a lista de seus comics cadastrados.
     @GetMapping("/usuario/{id}")
-    public Usuario findById(@PathVariable Long id){
-        return usuarioRepository.findById(id).get();
+    public ResponseEntity<Object> findById(@PathVariable Long id){
+        try{
+            return new ResponseEntity<>(usuarioRepository.findById(id).get(), HttpStatus.OK);
+        }catch (NotFoundException){
+            return new ResponseEntity<>()
+        }
     }
 
 
@@ -62,6 +75,10 @@ public class CadastroController {
             comics.setFormato(item.getFormat());
             comics.setQuantidadePaginas(item.getPageCount());
         }
+
+        //Verificando descontos
+        comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getIsbn()));
+        comics.setDescontoAtivo(comics.verificarDescontoAtivo());
         return comicsRepository.save(comics);
     }
 
