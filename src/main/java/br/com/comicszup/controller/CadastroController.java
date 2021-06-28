@@ -4,11 +4,9 @@ import br.com.comicszup.client.ComicsFeing;
 import br.com.comicszup.dto.response.ResultComicsResponseDTO;
 import br.com.comicszup.entity.Comics;
 import br.com.comicszup.entity.Usuario;
+import br.com.comicszup.erros.Mensagem;
 import br.com.comicszup.repository.ComicsRepository;
 import br.com.comicszup.repository.UsuarioRepository;
-import feign.Response;
-import javassist.NotFoundException;
-import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,7 +38,7 @@ public class CadastroController {
         try {
             return new ResponseEntity<>(usuarioRepository.save(user), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o usuário"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -49,37 +47,41 @@ public class CadastroController {
     public ResponseEntity<Object> findById(@PathVariable Long id){
         try{
             return new ResponseEntity<>(usuarioRepository.findById(id).get(), HttpStatus.OK);
-        }catch (NotFoundException){
-            return new ResponseEntity<>()
+        }catch (Exception e){
+            return new ResponseEntity<>(new Mensagem("Usuário não encontrado."),HttpStatus.NOT_FOUND);
         }
     }
 
 
     //Cadastrar comics
     @PostMapping("usuario/{id}/comics")
-    public Comics adicionar(@PathVariable Long id, @RequestBody Comics comics){
-        Usuario usuario = usuarioRepository.findById(id).get();
-        comics.setUsuario(usuario);
+    public ResponseEntity<Object> adicionar(@PathVariable Long id, @RequestBody Comics comics){
+        try {
+            Usuario usuario = usuarioRepository.findById(id).get();
+            comics.setUsuario(usuario);
 
-        //Buscar informações na API da Marvel sobre o comic
-        Long ts = gerarTimeStamp();
-        String hash = gerarHash(ts, PRIVATE_KEY, API_KEY);
-        List<ResultComicsResponseDTO> resultado = comicsFeing.getByTitle(ts, API_KEY, hash, comics.getTitulo())
-                .getData()
-                .getResults();
+            //Buscar informações na API da Marvel sobre o comic
+            Long ts = gerarTimeStamp();
+            String hash = gerarHash(ts, PRIVATE_KEY, API_KEY);
+            List<ResultComicsResponseDTO> resultado = comicsFeing.getByTitle(ts, API_KEY, hash, comics.getTitulo())
+                    .getData()
+                    .getResults();
 
-        //Adicionar as informações na entidade Comics
-        for (ResultComicsResponseDTO item : resultado){
-            comics.setIdRevista(item.getId());
-            comics.setUpc(item.getUpc());
-            comics.setFormato(item.getFormat());
-            comics.setQuantidadePaginas(item.getPageCount());
+            //Adicionar as informações na entidade Comics
+            for (ResultComicsResponseDTO item : resultado) {
+                comics.setIdRevista(item.getId());
+                comics.setUpc(item.getUpc());
+                comics.setFormato(item.getFormat());
+                comics.setQuantidadePaginas(item.getPageCount());
+            }
+
+            //Verificando descontos
+            comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getIsbn()));
+            comics.setDescontoAtivo(comics.verificarDescontoAtivo());
+            return new ResponseEntity<>(comicsRepository.save(comics), HttpStatus.CREATED);
+        }catch (Exception e){
+            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o comic"), HttpStatus.BAD_REQUEST);
         }
-
-        //Verificando descontos
-        comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getIsbn()));
-        comics.setDescontoAtivo(comics.verificarDescontoAtivo());
-        return comicsRepository.save(comics);
     }
 
 
