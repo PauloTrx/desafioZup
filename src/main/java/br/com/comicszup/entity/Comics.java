@@ -3,7 +3,6 @@ package br.com.comicszup.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -14,114 +13,65 @@ public class Comics {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
+    private String comicId;
+    //Informações coletadas via API
     private String titulo;
-    @Column(nullable = false)
-    private BigDecimal preco;
-    @Column(nullable = false)
+    private Float preco;
     private String autores;
-    @Column(nullable = false)
-    private String isbn;
-    @Column(nullable = false)
+    private String ISBN;
     private String descricao;
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
     private Usuario usuario;
 
-    //Informações coletadas via API
-    @Column(name = "id_revista")
-    private Integer idRevista;
-    private String upc;
-    private String formato;
-    @Column(name = "quantidade_paginas")
-    private String quantidadePaginas;
-
     //Informações do desconto
     private String diaDoDesconto;
     private Boolean descontoAtivo;
+    private Float valorComDesconto;
 
     public Comics() { }
 
-    public Long getId() { return id; }
+    public String getComicId() { return comicId; }
 
-    public String getTitulo() {
-        return titulo;
-    }
+    public void setComicId(String comicId) { this.comicId = comicId; }
 
-    public void setTitulo(String titulo) {
-        this.titulo = titulo;
-    }
+    public String getTitulo() { return titulo; }
 
-    public BigDecimal getPreco() {
-        return preco;
-    }
+    public void setTitulo(String titulo) { this.titulo = titulo; }
 
-    public void setPreco(BigDecimal preco) {
-        this.preco = preco;
-    }
+    public Float getPreco() { return preco; }
 
-    public String getAutores() {
-        return autores;
-    }
+    public void setPreco(Float preco) { this.preco = preco; }
 
-    public void setAutores(String autores) {
-        this.autores = autores;
-    }
+    public String getAutores() { return autores; }
 
-    public String getIsbn() {
-        return isbn;
-    }
+    public void setAutores(String autores) { this.autores = autores; }
 
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
+    public String getISBN() { return ISBN; }
 
-    public String getDescricao() {
-        return descricao;
-    }
+    public void setISBN(String ISBN) { this.ISBN = ISBN; }
 
-    public void setDescricao(String descricao) {
-        this.descricao = descricao;
-    }
+    public String getDescricao() { return descricao; }
 
-    public Usuario getUsuario() {
-        return usuario;
-    }
+    public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public void setUsuario(Usuario usuario) {
-        this.usuario = usuario;
-    }
+    public Usuario getUsuario() { return usuario; }
 
-    public Integer getIdRevista() { return idRevista; }
+    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
 
-    public void setIdRevista(Integer idRevista) { this.idRevista = idRevista; }
+    public String getDiaDoDesconto() { return diaDoDesconto; }
 
-    public String getUpc() { return upc; }
+    public void setDiaDoDesconto(String diaDoDesconto) { this.diaDoDesconto = diaDoDesconto; }
 
-    public void setUpc(String upc) { this.upc = upc; }
+    public Boolean getDescontoAtivo() { return descontoAtivo; }
 
-    public String getFormato() { return formato; }
+    public void setDescontoAtivo(Boolean descontoAtivo) { this.descontoAtivo = descontoAtivo; }
 
-    public void setFormato(String formato) { this.formato = formato; }
+    public Float getValorComDesconto() { return valorComDesconto; }
 
-    public String getQuantidadePaginas() { return quantidadePaginas; }
-
-    public void setQuantidadePaginas(String quantidadePaginas) { this.quantidadePaginas = quantidadePaginas; }
-
-    public String getDiaDoDesconto() {
-        return diaDoDesconto;
-    }
-
-    public void setDiaDoDesconto(String diaDoDesconto) {
-        this.diaDoDesconto = diaDoDesconto;
-    }
-
-    public Boolean getDescontoAtivo() {
-        return descontoAtivo;
-    }
-
-    public void setDescontoAtivo(Boolean descontoAtivo) {
-        this.descontoAtivo = descontoAtivo;
+    public void setValorComDesconto(Float valorComDesconto) {
+        this.valorComDesconto = valorComDesconto;
     }
 
     public String verificarDiaDoDesconto(String isbn){
@@ -149,12 +99,9 @@ public class Comics {
         }
     }
     public Boolean verificarDescontoAtivo(){
-
-        LocalDate dataAtual = LocalDate.now();
-        LocalDate later = dataAtual.plusDays(1);
         Locale portugues = new Locale("pt", "BR");
-        String diaDaSemanaAtual = later.getDayOfWeek().getDisplayName(TextStyle.FULL, portugues);
-        System.out.println(diaDaSemanaAtual);
+        LocalDate dataAtual = LocalDate.now();
+        String diaDaSemanaAtual = dataAtual.getDayOfWeek().getDisplayName(TextStyle.FULL, portugues);
         if(diaDaSemanaAtual.equals(diaDoDesconto)){
             return true;
         }else{

@@ -1,7 +1,8 @@
 package br.com.comicszup.controller;
 
 import br.com.comicszup.client.ComicsFeing;
-import br.com.comicszup.dto.response.ResultComicsResponseDTO;
+import br.com.comicszup.response.ItemsComicsResponse;
+import br.com.comicszup.response.ResultComicsResponse;
 import br.com.comicszup.entity.Comics;
 import br.com.comicszup.entity.Usuario;
 import br.com.comicszup.erros.Mensagem;
@@ -63,35 +64,39 @@ public class CadastroController {
             //Buscar informações na API da Marvel sobre o comic
             Long ts = gerarTimeStamp();
             String hash = gerarHash(ts, PRIVATE_KEY, API_KEY);
-            List<ResultComicsResponseDTO> resultado = comicsFeing.getByTitle(ts, API_KEY, hash, comics.getTitulo())
+            List<ResultComicsResponse> resultado = comicsFeing.getByComicId(ts, API_KEY, hash, comics.getComicId())
                     .getData()
                     .getResults();
 
             //Adicionar as informações na entidade Comics
-            for (ResultComicsResponseDTO item : resultado) {
-                comics.setIdRevista(item.getId());
-                comics.setUpc(item.getUpc());
-                comics.setFormato(item.getFormat());
-                comics.setQuantidadePaginas(item.getPageCount());
+            comics.setTitulo(resultado.get(0).getTitle());
+            comics.setPreco(resultado.get(0).getPrices().get(0).getPrice());
+            comics.setISBN(resultado.get(0).getIsbn());
+
+            //Salvar autores dentro de uma String
+            List<ItemsComicsResponse> autores = resultado.get(0).getCreators().getItems();
+            String nomeAutores = "";
+            for (ItemsComicsResponse autor : autores){
+                nomeAutores += autor.getName()+", ";
             }
+            nomeAutores = nomeAutores.substring(0, nomeAutores.length()-2);
+            comics.setAutores(nomeAutores);
+
+            //Limitar quantidade dos caracteres devido ao SQL VARCHAR(255)
+            comics.setDescricao(resultado.get(0).getDescription().substring(0, 254));
 
             //Verificando descontos
-            comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getIsbn()));
+            comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getISBN()));
             comics.setDescontoAtivo(comics.verificarDescontoAtivo());
+            if (comics.verificarDescontoAtivo() == true) {
+                comics.setValorComDesconto(Math.abs((10 * comics.getPreco() / 100) - comics.getPreco()));
+            }
+
             return new ResponseEntity<>(comicsRepository.save(comics), HttpStatus.CREATED);
         }catch (Exception e){
             return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o comic"), HttpStatus.BAD_REQUEST);
         }
     }
-
-
-
-
-
-
-
-
-
 
     public Long gerarTimeStamp() {
         return new Date().getTime();
@@ -118,14 +123,3 @@ public class CadastroController {
         return apikey;
     }
 }
-
-
-
-/*
-    @GetMapping("/usuario")
-    public List<Usuario> findAll() {
-        return usuarioRepository.findAll();
-    }
-
-
-*/
