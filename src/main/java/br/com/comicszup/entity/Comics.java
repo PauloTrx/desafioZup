@@ -23,7 +23,7 @@ public class Comics {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Usuario usuario;
+    private User user;
 
     //Informações do desconto
     private String diaDoDesconto;
@@ -56,9 +56,9 @@ public class Comics {
 
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
-    public Usuario getUsuario() { return usuario; }
+    public User getUser() { return user; }
 
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
+    public void setUser(User user) { this.user = user; }
 
     public String getDiaDoDesconto() { return diaDoDesconto; }
 

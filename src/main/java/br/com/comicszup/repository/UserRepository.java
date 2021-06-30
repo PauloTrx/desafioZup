@@ -1,9 +1,9 @@
 package br.com.comicszup.repository;
 
-import br.com.comicszup.entity.Usuario;
+import br.com.comicszup.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
+public interface UserRepository extends JpaRepository<User,Long> {
 }

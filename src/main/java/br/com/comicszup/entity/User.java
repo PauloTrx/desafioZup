@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Entity
-public class Usuario {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,10 +17,10 @@ public class Usuario {
     private String CPF;
     @Column(nullable = false)
     private LocalDate dataDeNascimento;
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "user")
     List<Comics> comics;
 
-    public Usuario() { }
+    public User() { }
 
     public Long getId(){ return this.id; }
 
