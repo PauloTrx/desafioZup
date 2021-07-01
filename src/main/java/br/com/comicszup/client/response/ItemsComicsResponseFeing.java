@@ -1,6 +1,6 @@
-package br.com.comicszup.response;
+package br.com.comicszup.client.response;
 
-public class ItemsComicsResponse {
+public class ItemsComicsResponseFeing {
     private String name;
 
     public String getName() {

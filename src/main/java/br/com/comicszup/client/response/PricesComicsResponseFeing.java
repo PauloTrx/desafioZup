@@ -1,6 +1,6 @@
-package br.com.comicszup.response;
+package br.com.comicszup.client.response;
 
-public class PricesComicsResponse {
+public class PricesComicsResponseFeing {
     private Float price;
 
     public Float getPrice() {

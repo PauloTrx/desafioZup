@@ -1,11 +1,11 @@
-package br.com.comicszup.response;
+package br.com.comicszup.client.response;
 
 import java.util.List;
 
-public class ResultComicsResponse {
+public class ResultComicsResponseFeing {
     private String title;
-    private List<PricesComicsResponse> prices;
-    private CreatorsComicsResponse creators;
+    private List<PricesComicsResponseFeing> prices;
+    private CreatorsComicsResponseFeing creators;
     private String isbn;
     private String description;
 
@@ -17,19 +17,19 @@ public class ResultComicsResponse {
         this.title = title;
     }
 
-    public List<PricesComicsResponse> getPrices() {
+    public List<PricesComicsResponseFeing> getPrices() {
         return prices;
     }
 
-    public void setPrices(List<PricesComicsResponse> prices) {
+    public void setPrices(List<PricesComicsResponseFeing> prices) {
         this.prices = prices;
     }
 
-    public CreatorsComicsResponse getCreators() {
+    public CreatorsComicsResponseFeing getCreators() {
         return creators;
     }
 
-    public void setCreators(CreatorsComicsResponse creators) {
+    public void setCreators(CreatorsComicsResponseFeing creators) {
         this.creators = creators;
     }
 

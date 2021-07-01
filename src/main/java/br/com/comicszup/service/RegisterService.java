@@ -1,8 +1,9 @@
 package br.com.comicszup.service;
 
 import br.com.comicszup.client.ComicsFeing;
-import br.com.comicszup.response.ItemsComicsResponse;
-import br.com.comicszup.response.ResultComicsResponse;
+import br.com.comicszup.client.response.ItemsComicsResponseFeing;
+import br.com.comicszup.client.response.ResultComicsResponseFeing;
+import br.com.comicszup.dto.response.ComicsResponseDTO;
 import br.com.comicszup.entity.Comics;
 import br.com.comicszup.entity.User;
 import br.com.comicszup.erros.Mensagem;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.xml.bind.DatatypeConverter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Date;
@@ -57,7 +57,7 @@ public class RegisterService {
             //Buscar informações na API da Marvel sobre o comic
             Long ts = gerarTimeStamp();
             String hash = gerarHash(ts, PRIVATE_KEY, API_KEY);
-            List<ResultComicsResponse> resultado = comicsFeing.getByComicId(ts, API_KEY, hash, comics.getComicId())
+            List<ResultComicsResponseFeing> resultado = comicsFeing.getByComicId(ts, API_KEY, hash, comics.getComicId())
                     .getData()
                     .getResults();
 
@@ -67,9 +67,9 @@ public class RegisterService {
             comics.setISBN(resultado.get(0).getIsbn());
 
             //Salvar autores dentro de uma String
-            List<ItemsComicsResponse> autores = resultado.get(0).getCreators().getItems();
+            List<ItemsComicsResponseFeing> autores = resultado.get(0).getCreators().getItems();
             String nomeAutores = "";
-            for (ItemsComicsResponse autor : autores){
+            for (ItemsComicsResponseFeing autor : autores){
                 nomeAutores += autor.getName()+", ";
             }
             nomeAutores = nomeAutores.substring(0, nomeAutores.length()-2);
@@ -84,8 +84,8 @@ public class RegisterService {
             if (comics.getDescontoAtivo() == true) {
                 comics.setPreco(Math.abs((10 * comics.getPreco() / 100) - comics.getPreco()));
             }
-
-            return new ResponseEntity<>(comicsRepository.save(comics), HttpStatus.CREATED);
+            comicsRepository.save(comics);
+            return new ResponseEntity<>(new ComicsResponseDTO(comics), HttpStatus.CREATED);
         }catch (Exception e){
             return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o comic", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
         }

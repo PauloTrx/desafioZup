@@ -1,15 +1,15 @@
-package br.com.comicszup.response;
+package br.com.comicszup.client.response;
 
 import java.util.List;
 
-public class CreatorsComicsResponse {
-    private List<ItemsComicsResponse> items;
+public class CreatorsComicsResponseFeing {
+    private List<ItemsComicsResponseFeing> items;
 
-    public List<ItemsComicsResponse> getItems() {
+    public List<ItemsComicsResponseFeing> getItems() {
         return items;
     }
 
-    public void setItems(List<ItemsComicsResponse> items) {
+    public void setItems(List<ItemsComicsResponseFeing> items) {
         this.items = items;
     }
 }

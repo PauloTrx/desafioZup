@@ -1,11 +1,11 @@
-package br.com.comicszup.response;
+package br.com.comicszup.client.response;
 
 import java.util.List;
 
-public class DataComicsResponse {
-    private List<ResultComicsResponse> results;
+public class DataComicsResponseFeing {
+    private List<ResultComicsResponseFeing> results;
 
-    public List<ResultComicsResponse> getResults() {
+    public List<ResultComicsResponseFeing> getResults() {
         return results;
     }
 }

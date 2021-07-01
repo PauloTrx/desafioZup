@@ -1,10 +1,10 @@
-package br.com.comicszup.response;
+package br.com.comicszup.client.response;
 
-public class ComicsResponse {
+public class ComicsResponseFeing {
     private String copyright;
     private String attributionText;
     private String attributionHTML;
-    private DataComicsResponse data;
+    private DataComicsResponseFeing data;
 
     public String getCopyright() { return copyright; }
 
@@ -12,5 +12,5 @@ public class ComicsResponse {
 
     public String getAttributionHTML() { return attributionHTML; }
 
-    public DataComicsResponse getData() { return data; }
+    public DataComicsResponseFeing getData() { return data; }
 }
