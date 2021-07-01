@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.DatatypeConverter;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.util.Date;
@@ -36,7 +37,7 @@ public class RegisterService {
         try {
             return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o usuário"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o usuário", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -44,7 +45,7 @@ public class RegisterService {
         try{
             return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>(new Mensagem("Usuário não encontrado."),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Mensagem("Usuário não encontrado.", e.getLocalizedMessage()),HttpStatus.NOT_FOUND);
         }
     }
 
@@ -81,12 +82,12 @@ public class RegisterService {
             comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getISBN()));
             comics.setDescontoAtivo(comics.verificarDescontoAtivo());
             if (comics.getDescontoAtivo() == true) {
-                comics.setValorComDesconto(Math.abs((10 * comics.getPreco() / 100) - comics.getPreco()));
+                comics.setPreco(Math.abs((10 * comics.getPreco() / 100) - comics.getPreco()));
             }
 
             return new ResponseEntity<>(comicsRepository.save(comics), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o comic"), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o comic", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -97,16 +98,12 @@ public class RegisterService {
     public String gerarHash(Long timeStamp, String apikey, String privatekey) {
         try {
             String ts = Long.toString(timeStamp);
-            String hd;
-            
             MessageDigest md5 = MessageDigest.getInstance("MD5");
             md5.update(ts.getBytes());
             md5.update(apikey.getBytes());
             md5.update(privatekey.getBytes());
             BigInteger hash = new BigInteger(1, md5.digest());
-            hd = hash.toString(16);
-            while ( hd.length() < 32 ) { hd = "0" + hd; } // pad with leading 0's
-            return hd;
+            return hash.toString(16);
 
         } catch (Exception e) {
             System.out.println(e);

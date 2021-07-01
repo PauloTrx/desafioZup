@@ -28,9 +28,10 @@ public class Comics {
     //Informações do desconto
     private String diaDoDesconto;
     private Boolean descontoAtivo;
-    private Float valorComDesconto;
 
     public Comics() { }
+
+    public Long getId() { return id; }
 
     public String getComicId() { return comicId; }
 
@@ -68,12 +69,6 @@ public class Comics {
 
     public void setDescontoAtivo(Boolean descontoAtivo) { this.descontoAtivo = descontoAtivo; }
 
-    public Float getValorComDesconto() { return valorComDesconto; }
-
-    public void setValorComDesconto(Float valorComDesconto) {
-        this.valorComDesconto = valorComDesconto;
-    }
-
     public String verificarDiaDoDesconto(String isbn){
 
         String ultimoDigitoIsbn = isbn.substring(isbn.length()-1);
@@ -102,6 +97,7 @@ public class Comics {
         Locale portugues = new Locale("pt", "BR");
         LocalDate dataAtual = LocalDate.now();
         String diaDaSemanaAtual = dataAtual.getDayOfWeek().getDisplayName(TextStyle.FULL, portugues);
+        System.out.println(diaDaSemanaAtual);
         if(diaDaSemanaAtual.equals(diaDoDesconto)){
             return true;
         }else{
