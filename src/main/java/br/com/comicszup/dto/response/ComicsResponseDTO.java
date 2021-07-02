@@ -1,12 +1,6 @@
 package br.com.comicszup.dto.response;
 
 import br.com.comicszup.entity.Comics;
-import br.com.comicszup.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 
 public class ComicsResponseDTO {
     private String comicId;

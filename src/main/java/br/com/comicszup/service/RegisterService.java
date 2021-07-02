@@ -6,7 +6,7 @@ import br.com.comicszup.client.response.ResultComicsResponseFeing;
 import br.com.comicszup.dto.response.ComicsResponseDTO;
 import br.com.comicszup.entity.Comics;
 import br.com.comicszup.entity.User;
-import br.com.comicszup.erros.Mensagem;
+import br.com.comicszup.erro.Message;
 import br.com.comicszup.repository.ComicsRepository;
 import br.com.comicszup.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,7 @@ public class RegisterService {
         try {
             return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o usuário", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Message("Erro ao cadastrar o usuário", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -45,7 +45,7 @@ public class RegisterService {
         try{
             return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);
         }catch (Exception e){
-            return new ResponseEntity<>(new Mensagem("Usuário não encontrado.", e.getLocalizedMessage()),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new Message("Usuário não encontrado.", e.getLocalizedMessage()),HttpStatus.NOT_FOUND);
         }
     }
 
@@ -87,7 +87,7 @@ public class RegisterService {
             comicsRepository.save(comics);
             return new ResponseEntity<>(new ComicsResponseDTO(comics), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(new Mensagem("Erro ao cadastrar o comic", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new Message("Erro ao cadastrar o comic", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -96,6 +96,7 @@ public class Comics {
     public Boolean verificarDescontoAtivo(){
         Locale portugues = new Locale("pt", "BR");
         LocalDate dataAtual = LocalDate.now();
+        dataAtual = dataAtual.plusDays(5);
         String diaDaSemanaAtual = dataAtual.getDayOfWeek().getDisplayName(TextStyle.FULL, portugues);
         System.out.println(diaDaSemanaAtual);
         if(diaDaSemanaAtual.equals(diaDoDesconto)){

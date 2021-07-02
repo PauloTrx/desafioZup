@@ -1,14 +1,14 @@
-package br.com.comicszup.erros;
+package br.com.comicszup.erro;
 
-public class Mensagem {
+public class Message {
 
     private String mensagem;
     private String erro;
 
-    public Mensagem() {
+    public Message() {
     }
 
-    public Mensagem(String mensagem, String erro) {
+    public Message(String mensagem, String erro) {
         this.mensagem = mensagem;
         this.erro = erro;
     }
