@@ -8,8 +8,4 @@ public class CreatorsComicsResponseFeing {
     public List<ItemsComicsResponseFeing> getItems() {
         return items;
     }
-
-    public void setItems(List<ItemsComicsResponseFeing> items) {
-        this.items = items;
-    }
 }

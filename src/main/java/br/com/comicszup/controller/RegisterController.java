@@ -8,27 +8,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping
+@RequestMapping("/user")
 public class RegisterController {
 
     @Autowired
     RegisterService registerService;
 
     //Cadastrar user
-    @PostMapping("/user")
+    @PostMapping
     public ResponseEntity<Object> cadastroUsuario(@RequestBody User user){
        return registerService.cadastroUsuario(user);
     }
 
-    //Retornar usuario com a lista de seus comics cadastrados.
-    @GetMapping("/user/{id}")
-    public ResponseEntity<Object> findById(@PathVariable Long id){
-        return registerService.findById(id);
-    }
-
     //Cadastrar comics
-    @PostMapping("user/{id}/comics")
+    @PostMapping("/{id}/comics")
     public ResponseEntity<Object> adicionar(@PathVariable Long id, @RequestBody Comics comics){
         return registerService.adicionar(id, comics);
+    }
+
+    //Retornar usuario com a lista de seus comics cadastrados.
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> findById(@PathVariable Long id){
+        return registerService.findById(id);
     }
 }

@@ -69,40 +69,5 @@ public class Comics {
 
     public void setDescontoAtivo(Boolean descontoAtivo) { this.descontoAtivo = descontoAtivo; }
 
-    public String verificarDiaDoDesconto(String isbn){
 
-        String ultimoDigitoIsbn = isbn.substring(isbn.length()-1);
-
-        switch (ultimoDigitoIsbn){
-            case "0": case "1":
-                return "segunda-feira";
-
-            case "2": case "3":
-                return "terça-feira";
-
-            case "4": case "5":
-                return "quarta-feira";
-
-            case "6": case "7":
-                return "quinta-feira";
-
-            case "8": case "9":
-                return "sexta-feira";
-
-            default:
-                return "inválido";
-        }
-    }
-    public Boolean verificarDescontoAtivo(){
-        Locale portugues = new Locale("pt", "BR");
-        LocalDate dataAtual = LocalDate.now();
-        dataAtual = dataAtual.plusDays(5);
-        String diaDaSemanaAtual = dataAtual.getDayOfWeek().getDisplayName(TextStyle.FULL, portugues);
-        System.out.println(diaDaSemanaAtual);
-        if(diaDaSemanaAtual.equals(diaDoDesconto)){
-            return true;
-        }else{
-            return false;
-        }
-    }
 }

@@ -6,7 +6,7 @@ import br.com.comicszup.client.response.ResultComicsResponseFeing;
 import br.com.comicszup.dto.response.ComicsResponseDTO;
 import br.com.comicszup.entity.Comics;
 import br.com.comicszup.entity.User;
-import br.com.comicszup.erro.Message;
+import br.com.comicszup.Exception.MessageException;
 import br.com.comicszup.repository.ComicsRepository;
 import br.com.comicszup.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,11 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class RegisterService {
@@ -35,17 +38,12 @@ public class RegisterService {
 
     public ResponseEntity<Object> cadastroUsuario(User user) {
         try {
+            if (userRepository.findByEmail(user.getEmail()).isPresent() || userRepository.findByCPF(user.getCPF()).isPresent()){
+                return new ResponseEntity<>(new MessageException("Email ou CPF já cadastrado"), HttpStatus.BAD_REQUEST);
+            }
             return new ResponseEntity<>(userRepository.save(user), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(new Message("Erro ao cadastrar o usuário", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    public ResponseEntity<Object> findById(Long id){
-        try{
-            return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);
-        }catch (Exception e){
-            return new ResponseEntity<>(new Message("Usuário não encontrado.", e.getLocalizedMessage()),HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(new MessageException("Erro ao cadastrar o usuário"), HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -55,9 +53,9 @@ public class RegisterService {
             comics.setUser(user);
 
             //Buscar informações na API da Marvel sobre o comic
-            Long ts = gerarTimeStamp();
-            String hash = gerarHash(ts, PRIVATE_KEY, API_KEY);
-            List<ResultComicsResponseFeing> resultado = comicsFeing.getByComicId(ts, API_KEY, hash, comics.getComicId())
+            Long timestamp = new Date().getTime();
+            String hash = gerarHash(timestamp, PRIVATE_KEY, API_KEY);
+            List<ResultComicsResponseFeing> resultado = comicsFeing.getByComicId(timestamp, API_KEY, hash, comics.getComicId())
                     .getData()
                     .getResults();
 
@@ -79,20 +77,16 @@ public class RegisterService {
             comics.setDescricao(resultado.get(0).getDescription().substring(0, 254));
 
             //Verificando descontos
-            comics.setDiaDoDesconto(comics.verificarDiaDoDesconto(comics.getISBN()));
-            comics.setDescontoAtivo(comics.verificarDescontoAtivo());
+            comics.setDiaDoDesconto(verificarDiaDoDesconto(comics.getISBN()));
+            comics.setDescontoAtivo(verificarDescontoAtivo(comics.getDiaDoDesconto()));
             if (comics.getDescontoAtivo() == true) {
                 comics.setPreco(Math.abs((10 * comics.getPreco() / 100) - comics.getPreco()));
             }
             comicsRepository.save(comics);
             return new ResponseEntity<>(new ComicsResponseDTO(comics), HttpStatus.CREATED);
         }catch (Exception e){
-            return new ResponseEntity<>(new Message("Erro ao cadastrar o comic", e.getLocalizedMessage()), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new MessageException("Erro ao cadastrar o comic"), HttpStatus.BAD_REQUEST);
         }
-    }
-
-    public Long gerarTimeStamp() {
-        return new Date().getTime();
     }
 
     public String gerarHash(Long timeStamp, String apikey, String privatekey) {
@@ -107,9 +101,56 @@ public class RegisterService {
 
         } catch (Exception e) {
             System.out.println(e);
-
         }
-
         return apikey;
+    }
+
+
+    public ResponseEntity<Object> findById(Long id){
+        try{
+            return new ResponseEntity<>(userRepository.findById(id).get(), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(new MessageException("Usuário não encontrado."),HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+    public String verificarDiaDoDesconto(String isbn){
+
+        String ultimoDigitoIsbn = isbn.substring(isbn.length()-1);
+
+        switch (ultimoDigitoIsbn){
+            case "0": case "1":
+                return "segunda-feira";
+
+            case "2": case "3":
+                return "terça-feira";
+
+            case "4": case "5":
+                return "quarta-feira";
+
+            case "6": case "7":
+                return "quinta-feira";
+
+            case "8": case "9":
+                return "sexta-feira";
+
+            default:
+                return "inválido";
+        }
+    }
+
+    public Boolean verificarDescontoAtivo(String diaDoDesconto){
+        Locale portugues = new Locale("pt", "BR");
+        LocalDate dataAtual = LocalDate.now();
+        dataAtual = dataAtual.plusDays(5);
+        String diaDaSemanaAtual = dataAtual
+                .getDayOfWeek()
+                .getDisplayName(TextStyle.FULL, portugues);
+        if(diaDaSemanaAtual.equals(diaDoDesconto)){
+            return true;
+        }else{
+            return false;
+        }
     }
 }
